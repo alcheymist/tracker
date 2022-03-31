@@ -16,9 +16,9 @@ import * as schema from '../../../schema/v/code/schema.js';
 //Resolve the iquestionnaire
 import * as quest from '../../../schema/v/code/questionnaire.js'; 
 //
-//import * as piq from "./piq";
-//
-//import * as msg from "./msg";        
+import * as piq from "./piq.js";
+//Import the test msg class.
+import * as msg from "./msg.js"        
 //
 //System for tracking assignments for employees of an organization.
 //
@@ -166,17 +166,17 @@ export default class main extends app.app {
         //
         return true;
     }
-//        async new_msg(): Promise<void> {
-//        //
-//        //create a popup that facilitates sending a new message
-//        const Msg = new msg.msg(this);
-//        //
-//        //collect all the data from the user
-//        const result: msg.Imsg | undefined = await Msg.administer();
-//        //
-//        //check the validity of the data
-//        if (result === undefined) return;
-//    }
+        async new_msg(): Promise<void> {
+        //
+        //create a popup that facilitates sending a new message
+        const Msg = new msg.msg(this);
+        //
+        //collect all the data from the user
+        const result: msg.Imsg | undefined = await Msg.administer();
+        //
+        //check the validity of the data
+        if (result === undefined) return;
+    }
    
     //
     //List all assignments that are due and have not been reported.
@@ -260,30 +260,28 @@ export default class main extends app.app {
         //call crud page and close when done
         await piq.administer();
     }
-        async definer(): Promise<void> {
-            //
-            //
-            const select = this.get_element("definer");
-            //
-            //List of definers
-            const definer: Array < { id: string } > = await server.exec(
-                "database", ["mutall_tracker"],
-                "get_sql_data", ["select id from definer"]
-            );
-            //
-            //Formulate the option from the definers list.
-            const options: Array < string > = definer.map(
-                (definer) => `<option value= '${definer.id}'>${definer.id}</option>`
-            );
-            //
-            //Convert option to text
-            const options_str: string = options.join("\n");
-            //
-            //Attach the options to the select element.
-            select.innerHTML = options_str;
-        }
-   
-   
+    async definer(): Promise<void> {
+        //
+        //
+        const select = this.get_element("definer");
+        //
+        //List of definers
+        const definer: Array < { id: string } > = await server.exec(
+            "database", ["mutall_tracker"],
+            "get_sql_data", ["select id from definer"]
+        );
+        //
+        //Formulate the option from the definers list.
+        const options: Array < string > = definer.map(
+            (definer) => `<option value= '${definer.id}'>${definer.id}</option>`
+        );
+        //
+        //Convert option to text
+        const options_str: string = options.join("\n");
+        //
+        //Attach the options to the select element.
+        select.innerHTML = options_str;
+    } 
 }
 
 class definer extends outlook.popup<Idef> {
@@ -293,7 +291,7 @@ class definer extends outlook.popup<Idef> {
     }
     //In future, check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
-    check(): boolean{return true;}
+   async check(): Promise<boolean>{return true;}
     //
     //
     async get_result(): Promise<Idef> {
@@ -353,7 +351,7 @@ class tea_delivery extends popup<void>{
     //
     //check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
-    check(): boolean {return true;}
+    async check():Promise<boolean> {return true;}
     //
     //Collect data to show whether we should update the home page or not.
     async get_result(): Promise<void> {}
@@ -382,7 +380,7 @@ class pay_tea extends popup<void>{
     }
     //
     //Collect data to show show if we should update the homepage or not.
-    check(): boolean {return true};
+    async check(): Promise<boolean> {return true};
     //
     //Collect data to show whether we should update the home page or not.
     async get_result(): Promise<void> {}
@@ -410,7 +408,7 @@ class input_assignments extends popup<void>{
     }
     //
     //
-    check(): boolean {return true};
+    async check(): Promise<boolean> {return true};
     //
     //Check if a file json containing Iquestionare is selected.
     async get_result(): Promise<void> {}
@@ -435,8 +433,7 @@ class svg extends popup<void>{
         super('svg.html')
     }
     //
-    //
-    check(): boolean {return true};
+    async check(): Promise<boolean> {return true};
     //
     //Check if a file json containing Iquestionare is selected.
     async get_result(): Promise<void> {}

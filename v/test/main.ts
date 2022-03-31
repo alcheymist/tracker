@@ -16,12 +16,12 @@ import * as schema from '../../../schema/v/code/schema.js';
 //Resolve the iquestionnaire
 import * as quest from '../../../schema/v/code/questionnaire.js';         
 //
+import * as viewer from "../../../outlook/v/code/viewer.js"
 //System for tracking assignments for employees of an organization.
 //
 //A column on the application database that is linked to a corresponding one
 //on the user database. Sometimes this link is broken and needs to be
 //re-established.
-type replica = {ename: string, cname:string};
 //
 //The structure of a definer.
 export type Idef = {
@@ -59,6 +59,14 @@ export default class main extends app.app {
                         id: "svg",
                         listener: ["event", async () => this.svg()]
                               
+                    },
+                    {
+                        title: "View Template",
+                        id: "view_template",
+                        listener: [
+                            "event", 
+                            async() => await(new viewer.viewer(this)).administer()
+                        ]
                     }
                     
                 ]
@@ -66,10 +74,6 @@ export default class main extends app.app {
             ];
         }
         async definer() {
-            //
-            //
-            const select = this.get_element("definer");
-            //
             //List of definers
             const definer: Array < { id: string } > = await server.exec(
             
@@ -84,7 +88,8 @@ export default class main extends app.app {
                 "get_sql_data",
                 ["select id from definer"]
             );
-            //
+            //get after running sql
+            const select = this.get_element("definer");
             //Formulate the option from the definers list.
             const options: Array < string > = definer.map(
                 (definer) => `<option value= '${definer.id}'>${definer.id}</option>`
@@ -96,8 +101,12 @@ export default class main extends app.app {
             //Attach the options to the select element.
             select.innerHTML = options_str;
         }
-       async svg(){
-           
+       async svg(): Promise<void>{
+           //
+           const baby = new svg(this);
+           //
+           await baby.administer();
+
        }
    
    
@@ -164,17 +173,21 @@ class definer extends outlook.popup<Idef> {
 }
 class svg extends outlook.baby<void>{
     //
-    constructor(){
-        super('')
+    constructor(mother: outlook.view, filename: String) {
+        super(mother, "svg.html")
     }
     //In future, check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
     check(): boolean{return true;}
     //
     //
-    async get_result(){
+    async get_result(){}
+    //
+    // Display the panels with the elements
+    async show_panels(): Promise<void>{
         //
-        }
+        
+    }
 }
 
   

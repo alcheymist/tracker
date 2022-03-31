@@ -18,8 +18,6 @@ $config = new config();
         <!-- 
         Styling the theme panel-->
         <link id="theme_css" rel="stylesheet" href="../../../outlook/v/code/theme.css"/>
-            <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
         <!--
         Expose the main application to HTML pages-->
           <script type="module">
@@ -46,7 +44,7 @@ $config = new config();
             
             //Start the application after fully loading the current 
             //window.
-            window.onload = async ()=>{
+            window.onload = async () =>{
                 //
                 //Use the php configuration file to create the main application
                 window.Main = new main(<?php echo json_encode($config); ?>);
@@ -54,7 +52,7 @@ $config = new config();
                 //Complete the creatio of 'main' by evoking the asynchronous 
                 //methods (which are not callable ffrom th constructor)
                 await window.Main.initialize();
-            }
+            };
         </script>        
         <!-- Marker for styling columns -->
         <style id="columns"></style>
@@ -94,15 +92,11 @@ $config = new config();
           Please <button onclick="app.current.login()">login</button> to access 
           various services
       </div>
-      <div id="whatsup">Events</div>
-      <div id="messenger">Messenger <br>
+      <div id="event">Events</div>
+      <div id="message">Messenger <br>
           <button>
             <a href="https://api.whatsapp.com/send?phone=--your phone--&text=--your text--" target="_blank">Existing User </a> <br>
             </button><br>
-            <!-- For non existing phone numbers:  -->
-            <button>
-            <a href="https://api.whatsapp.com/send?group=--your phone--&text=--your text--" target="_blank">New user </a>
-            </button>
       </div>
       
       <div class="footer">
@@ -112,6 +106,5 @@ $config = new config();
           <div id="signature">Developed by: <?php echo $config->developer; ?></div>
           <div id="company">Mutall Data Co.</div>
       </div>
-      <script src="drag.js"></script>
     </body>
 </html>

@@ -9,6 +9,8 @@ import * as server from '../../../schema/v/code/server.js';
 //
 //Import schema.
 import * as schema from '../../../schema/v/code/schema.js';
+//Import the test msg class.
+import * as msg from "./msg.js";
 //
 export default class main extends app.app {
     //
@@ -142,17 +144,18 @@ export default class main extends app.app {
         //
         return true;
     }
-    //        async new_msg(): Promise<void> {
-    //        //
-    //        //create a popup that facilitates sending a new message
-    //        const Msg = new msg.msg(this);
-    //        //
-    //        //collect all the data from the user
-    //        const result: msg.Imsg | undefined = await Msg.administer();
-    //        //
-    //        //check the validity of the data
-    //        if (result === undefined) return;
-    //    }
+    async new_msg() {
+        //
+        //create a popup that facilitates sending a new message
+        const Msg = new msg.msg(this);
+        //
+        //collect all the data from the user
+        const result = await Msg.administer();
+        //
+        //check the validity of the data
+        if (result === undefined)
+            return;
+    }
     //
     //List all assignments that are due and have not been reported.
     //Ordered by Date. 
@@ -257,7 +260,7 @@ class definer extends outlook.popup {
     }
     //In future, check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
-    check() { return true; }
+    async check() { return true; }
     //
     //
     async get_result() {
@@ -317,7 +320,7 @@ class tea_delivery extends popup {
     //
     //check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
-    check() { return true; }
+    async check() { return true; }
     //
     //Collect data to show whether we should update the home page or not.
     async get_result() { }
@@ -346,7 +349,7 @@ class pay_tea extends popup {
     }
     //
     //Collect data to show show if we should update the homepage or not.
-    check() { return true; }
+    async check() { return true; }
     ;
     //
     //Collect data to show whether we should update the home page or not.
@@ -375,7 +378,7 @@ class input_assignments extends popup {
     }
     //
     //
-    check() { return true; }
+    async check() { return true; }
     ;
     //
     //Check if a file json containing Iquestionare is selected.
@@ -401,8 +404,7 @@ class svg extends popup {
         super('svg.html');
     }
     //
-    //
-    check() { return true; }
+    async check() { return true; }
     ;
     //
     //Check if a file json containing Iquestionare is selected.

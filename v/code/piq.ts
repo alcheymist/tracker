@@ -7,31 +7,36 @@ import * as outlook from '../../../outlook/v/code/outlook.js';
 import * as schema from "../../../schema/v/code/schema.js";
 //
 //Resolve the iquestionnaire
-import * as quest from '../../../schema/v/code/questionnaire.js'; 
+import * as quest from '../../../schema/v/code/questionnaire.js';
+//
+//import main from tracker
+import main from './main.js'; 
 //
 export type Ipiq = {piq: string};
 //
 //Completing level 2 registration
 export class piq extends outlook.baby<quest.Iquestionnaire>{
     //
-    constructor(base: outlook.page){
-        super(base, "definers.html" )
+    constructor(public app: main){
+        super(app, "definers.html" )
     }
     //
-    check():boolean{
+   async check():Promise<boolean>{
         //
-        
+        //1. Collect and check all the data entered by the user.
         //
         return true;
     }
     //
     //
-    async get_result():lib.Iquestionnaire{
+    async get_result(): .Iquestionnaire{
+        //
         //
         const start_date = document.querySelector("{name = start_date}")
         //
-        const result:lib.Iquestionnare = []
-        result.push([
+        const result: .Iquestionnare = []
+        //
+        await result.push([
             "dbname",
             "ename",
             "cname",

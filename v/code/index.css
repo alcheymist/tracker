@@ -18,8 +18,8 @@ body {
     grid-template-areas: 
         "header header header" 
         "services content welcome" 
-        "services content whatsup" 
-        "services content messenger" 
+        "services content event" 
+        "services content message" 
         "footer footer footer";
 }
 
@@ -73,28 +73,32 @@ body {
     grid-area: content;
     background-color: lightcyan;
     overflow: auto;
-    /*    overflow: auto;
-    resize: horizontal;
-     allows one to resize the grid area horizontally 
-    min-width: min-content;*/
 }
 
-#whatsup {
-    grid-area: whatsup;
+#event {
+    grid-area: event;
     background-color: lightblue;
     overflow: auto;
     resize: both;
-    /* allows one to resize the grid area horizontally */
+    /* allows one to resize the grid area horizontally and vertically */
     min-width: 220px;
+    max-width: 800px;
+    min-height: 138px;
+    max-height: 280px;
+
 }
 
-#messenger {
-    grid-area: messenger;
+#message {
+    grid-area: message;
     background-color: lightblue;
-    overflow: auto;
-    resize: horizontal;
-    /* allows one to resize the grid area horizontally */
+    overflow: auto; 
+    resize: both;
+    /* allows one to resize the grid area horizontally and vertically  */
     min-width: 220px;
+    max-width: 800px;
+    min-height: 138px;
+    max-height: 300px;
+    
 }
 
 

@@ -10,7 +10,7 @@ export class piq extends outlook.baby {
         super(base, "definers.html");
     }
     //
-    check() {
+    async check() {
         //
         //
         return true;
