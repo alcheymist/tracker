@@ -1,17 +1,28 @@
+//
 import * as outlook from '../../../outlook/v/code/outlook.js';
 import * as app from "../../../outlook/v/code/app.js";
-//
-//Import server
-import * as server from '../../../schema/v/code/server.js';
 //
 //Import schema.
 import * as schema from '../../../schema/v/code/schema.js';
 //
+import * as mod from '../../../outlook/v/code/module.js';
+//System for daily management of organization activities.
 export default class main extends app.app {
+    //
+    writer;
+    messenger;
+    accountant;
+    scheduler;
     //
     //Initialize the main application.
     constructor(config) {
         super(config);
+        //
+        //initialize the above 
+        this.writer = new mod.writer();
+        this.messenger = new mod.messenger();
+        this.accountant = new mod.accountant();
+        this.scheduler = new mod.scheduler();
     }
     //
     //
@@ -21,7 +32,25 @@ export default class main extends app.app {
         return [
             {
                 title: "Actions",
-                id: "definer",
+                id: 'actions',
+                solutions: [
+                    //
+                    //View due assignments 
+                    {
+                        title: "Manage Events",
+                        id: "events",
+                        listener: ["crud", 'event', ['review'], '+', "mutall_users"]
+                    },
+                    {
+                        title: "Manage Messages",
+                        id: "messages",
+                        listener: ["crud", 'msg', ['review'], '+', "mutall_users"]
+                    },
+                ]
+            },
+            {
+                title: "Website",
+                id: "definers",
                 solutions: [
                     //
                     //populate definers from the database
@@ -31,51 +60,137 @@ export default class main extends app.app {
                         listener: ["event", () => this.definer()]
                     },
                     {
-                        title: "SVG",
-                        id: "svg",
-                        listener: ["event", async () => this.svg()]
+                        title: "Water reading",
+                        id: "water",
+                        listener: ["event", () => this.water()]
+                    },
+                    {
+                        title: "Enter Payments",
+                        id: "payment",
+                        listener: ["event", () => this.payment()]
                     }
                 ]
             }
         ];
     }
-    async definer() {
+    //
+    async payment() {
         //
+        //create a new instance.
+        const Payment = new payment(this);
         //
-        const select = this.get_element("definer");
-        //
-        //List of definers
-        const definer = await server.exec(
-        //selects data from a database in regard to the pk.
-        //               "selector",
-        //               ["definer", app.app.current.dbname],
-        //               "execute",
-        //               []
-        "database", ["mutall_tracker"], "get_sql_data", ["select id from definer"]);
-        //
-        //Formulate the option from the definers list.
-        const options = definer.map((definer) => `<option value= '${definer.id}'>${definer.id}</option>`);
-        //
-        //Convert option to text
-        const options_str = options.join("\n");
-        //
-        //Attach the options to the select element.
-        select.innerHTML = options_str;
+        const result = await Payment.administer();
+        //collect all the data
+        if (result === undefined)
+            return;
     }
-    async svg() {
+    //
+    async water() {
+        //
+        const Water = new water(this);
+        //
+        const result = await Water.administer();
+        //collect all the data
+        if (result === undefined)
+            return;
+    }
+    //
+    //
+    async definer() {
+        //create a new instance.
+        const Definer = new definer(this);
+        //
+        const result = await Definer.administer();
+        //collect all the data
+        if (result === undefined)
+            return;
     }
 }
-class definer extends outlook.popup {
+//
+class payment extends outlook.baby {
     //
-    constructor() {
-        super('definers.html');
+    constructor(mother) {
+        super(mother, "payments.html");
     }
-    //In future, check if a file json file containing Iquestionnaire is selected.
-    //For now, do nothing
-    check() { return true; }
+    //In future, check if a file json containing iquestionare is selected
     //
+    async check() {
+        //
+        //1. Collect and check the data that the user has entered.
+        //
+        //2. Save the data to the database.
+        const save = await this.mother.writer.save(this);
+        return true;
+    }
+    async get_result() {
+        //
+        return true;
+    }
+    async show_panels() {
+        //
+    }
+}
+//
+class water extends outlook.baby {
+    //
+    constructor(mother) {
+        //
+        //
+        super(mother, 'water.html');
+    }
+    //In future, check if a file json containing iquestionare is selected
+    //
+    async check() {
+        //
+        //1. Collect and check the data that the user has entered.
+        //
+        //2. Save the data to the database.
+        const save = await this.mother.writer.save(this);
+        //
+        return true;
+    }
+    async get_result() {
+        //
+        return true;
+    }
+    async show_panels() {
+        //
+        //1. Set the date to current.
+        //
+        //2. Fill the selector with the water meters.
+        //
+        //3. Add an event listener to the selector so that the last readings can be shown
+        //automatically on the form.     
+        //
+        //4. Add a listener to the data entry button so that it can compare the last 
+        // and current readings turning the consuption to green or red.
+    }
+}
+//
+//
+class definer extends outlook.baby {
+    app;
+    //
+    //
+    constructor(app) {
+        //
+        super(app, 'definers.html');
+        this.app = app;
+    }
+    //In future, check if a file json containing iquestionare is selected
+    //
+    async check() {
+        //
+        //1. Collect and check the data that the user has entered.
+        //
+        //2. Save the data to the database.
+        const save = await this.app.writer.save(this);
+        //
+        return true;
+    }
     //
     async get_result() {
+        //
         //
         //Get the definer id
         const id = this.get_element('id');
@@ -123,18 +238,7 @@ class definer extends outlook.popup {
         //
         return idefi;
     }
-}
-class svg extends outlook.baby {
-    //
-    constructor() {
-        super('');
-    }
-    //In future, check if a file json file containing Iquestionnaire is selected.
-    //For now, do nothing
-    check() { return true; }
-    //
-    //
-    async get_result() {
+    async show_panels() {
         //
     }
 }

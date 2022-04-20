@@ -2,6 +2,10 @@ html {
     height: 100%;
 }
 
+* {
+    border-radius: 5px;
+}
+
 
 /*Grid design and styling procedure*/
 
@@ -15,12 +19,7 @@ body {
     grid-template-columns: 1fr 4fr 1fr;
     /* represents a fraction of the available space in the grid container */
     grid-template-rows: 1fr 2fr 2fr 2fr 1fr;
-    grid-template-areas: 
-        "header header header" 
-        "services content welcome" 
-        "services content event" 
-        "services content message" 
-        "footer footer footer";
+    grid-template-areas: "header header header" "services content welcome" "services content event" "services content message" "footer footer footer";
 }
 
 .header {
@@ -62,6 +61,7 @@ body {
 #services {
     grid-area: services;
     background-color: lightgoldenrodyellow;
+    line-height: 1.5;
     overflow: auto;
     resize: horizontal;
     /* allows one to resize the grid area horizontally */
@@ -85,20 +85,18 @@ body {
     max-width: 800px;
     min-height: 138px;
     max-height: 280px;
-
 }
 
 #message {
     grid-area: message;
     background-color: lightblue;
-    overflow: auto; 
+    overflow: auto;
     resize: both;
     /* allows one to resize the grid area horizontally and vertically  */
     min-width: 220px;
     max-width: 800px;
     min-height: 138px;
     max-height: 300px;
-    
 }
 
 

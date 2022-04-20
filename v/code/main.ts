@@ -1,6 +1,7 @@
 //
 //Import app from the outlook library.
-import {assets, baby, popup} from '../../../outlook/v/code/outlook.js';
+import {popup} from '../../../outlook/v/code/outlook.js';
+//
 import * as outlook from '../../../outlook/v/code/outlook.js';
 
 import * as app from "../../../outlook/v/code/app.js";
@@ -20,12 +21,9 @@ import * as piq from "./piq.js";
 //Import the test msg class.
 import * as msg from "./msg.js"        
 //
-//System for tracking assignments for employees of an organization.
+import * as svg from "./svg.js"
+import * as mod from '../../../outlook/v/code/module.js';
 //
-//A column on the application database that is linked to a corresponding one
-//on the user database. Sometimes this link is broken and needs to be
-//re-established.
-type replica = {ename: string, cname:string};
 //
 //The structure of a definer.
 export type Idef = {
@@ -34,12 +32,23 @@ export type Idef = {
     organization: string;
     seq: number;
 }
-//
+//System for daily management of organization activities.
 export default class main extends app.app {
+    //
+    public writer: mod.writer;
+    public messenger: mod.messenger;
+    public accountant: mod.accountant;
+    public scheduler: mod.scheduler;
     //
     //Initialize the main application.
     constructor(config: app.Iconfig) {
         super(config);
+        //
+        //initialize the above 
+        this.writer = new mod.writer();
+        this.messenger = new mod.messenger();
+        this.accountant = new mod.accountant();
+        this.scheduler = new mod.scheduler();
     }
     //
     //
@@ -51,18 +60,26 @@ export default class main extends app.app {
                 title: "Actions",
                 id: 'actions',
                 solutions: [
-                    //
-                    //View due assignments 
                     {
-                        title: "View due assignments",
-                        id: "view_due_assignments",
-                        listener: ["event", () => this.view_due_assignments()]
-                    }               
-//                    {
-//                        title: "Create message",
-//                        id: "create_msg",
-//                        listener: ["event", ()=>{this.new_msg()}]
-//                    }
+                        title: "Manage Events",
+                        id: "events",
+                        listener: ["crud", 'event', ['review'], '+', "mutall_users"]
+                    },
+                    {
+                        title: "Manage Messages",
+                        id: "messages",
+                        listener: ["crud", 'msg', ['review'], '+', "mutall_users"]
+                    },               
+                    {
+                        title: "Create message",
+                        id: "create_msg",
+                        listener: ["event", ()=>{this.new_msg()}]
+                    },
+                    {
+                        title: "Show minutes",
+                        id:"minutes",
+                        listener:["event", () => this.minutes()]
+                    }
                 ]
             },
             {
@@ -96,11 +113,12 @@ export default class main extends app.app {
                         title: "Input Assignments",
                         id: "input_assignments",
                         listener: ["event", () => this.input_assignments()]
-                    },
+                    },//
+                    //View due assignments 
                     {
-                        title: "View Assignments",
-                        id: "view_assignments",
-                        listener: ["event", () => this.view_assignments()]
+                        title: "View due assignments",
+                        id: "view_due_assignments",
+                        listener: ["event", () => this.view_due_assignments()]
                     }
                 ]
             },
@@ -121,24 +139,34 @@ export default class main extends app.app {
                 title: "Registration",
                 id: 'registration',
                 solutions: [
+                    {
+                        title:"Register (LV1)",
+                        id:"complete_lv1_registration",
+                        listener: ["event", () => this.complete_lv1_registration()]
+                    },
                     //
                     //add intern registration to services.
                     {
-                    title: "Complete level 2",
-                    id: "piqs",
-                    listener: ["event", ()=> this.piqs()]
+                    title: "Register intern(LV2)",
+                    id: "piq",
+                    listener: ["event", ()=> this.register_intern()]
                     }
                 ]
             },
             {
                 title: "Website",
-                id:"definer",
+                id:"add_definer",
                 solutions: [
                     //
+                    {
+                        title: "View website",
+                        id: "website",
+                        listener: [ "event", () => this.website()]
+                    },
                     //populate definers from the database
                     {
                         title: "New Definer",
-                        id: "create_definer",
+                        id: "definer",
                         listener: ["event", () => this.definer()]
                     }
                 ]
@@ -150,34 +178,51 @@ export default class main extends app.app {
                     {
                         title: "SVG",
                         id: "svg",
-                        listener: ["event", () => this.svg()]
+                        listener: [ "event", async() => this.svg()]
                     }
                 ]
             }];
         }
-         async svg(): Promise<boolean> {
+    async complete_lv1_registration(): Promise<boolean> {
         //
-        //Create an instance of the tea_delivery class
-        const Svg = new svg();
+        const Regist = new complete_lv1_registration(this);
         //
-        //Open the popup and close when the user is done.
-        await Svg.administer();
-        //
+        await Regist.administer();
         //
         return true;
+
     }
-        async new_msg(): Promise<void> {
+    //
+    //Show minutes.
+    minutes(): void {
         //
-        //create a popup that facilitates sending a new message
-        const Msg = new msg.msg(this);
+        alert('Method not implemented.');
+    }
+    //
+    //
+    async svg(): Promise<void> {
         //
-        //collect all the data from the user
-        const result: msg.Imsg | undefined = await Msg.administer();
+        //Create an instance of the  class
+        const Svg = new svg.svg(this);
         //
-        //check the validity of the data
+        const result: svg.Isvg | undefined =  await Svg.administer();
+        //
         if (result === undefined) return;
+        //
+        
     }
-   
+    //
+    //
+    async website(): Promise<void>{
+        //
+        //create an instance of the class 
+        const Website = new website(this);
+        //
+        const result: true | undefined = await Website.administer();
+        //
+        if (result === undefined) return;
+
+    }
     //
     //List all assignments that are due and have not been reported.
     //Ordered by Date. 
@@ -207,10 +252,10 @@ export default class main extends app.app {
     }
     //
     //Tea delivery
-    async tea_delivery(): Promise<boolean> {
+    async tea_delivery(): Promise<true> {
         //
         //Create an instance of the tea_delivery class
-        const delivery = new tea_delivery();
+        const delivery = new tea_delivery(this);
         //
         //Open the popup and close when the user is done.
         await delivery.administer();
@@ -241,25 +286,44 @@ export default class main extends app.app {
         //Call crud page and close when done.
         await input.administer();
     }
-    //
-    //view all assignments.
-    view_assignments(): void {
-        alert('Service under development');
-    }
     //Create event and display on the events panel
     create_event(): void{
         alert('service under development');
     }
     //
-    //
-    async piqs(): Promise<void> {
+    //An event listener for registering a new user.
+    async register_intern(): Promise<true | undefined> {
         //
         //create an instance
-        const piq = new piqs.Ipiq(this);
+        const Piq = new piq.register_intern(this);
         //
-        //call crud page and close when done
-        await piq.administer();
+        //check whether the result is true or false(if we have successfully 
+        //registered an intern)
+        //Cast to define true or undefined.
+        const result/*: true | undefined */= await Piq.administer();
+        //
+        //continue only if a user was successfully registered.
+        if (result === undefined) return;
+        //
+        //update the homepage with the new intern(s).
+        return true;
     }
+    //An event listener for creating a new message.
+    async new_msg(): Promise<void> {
+        //
+        //create a popup that facilitates sending a new message
+        const Msg = new msg.new_msg(this);
+        //
+        //collect all the data from the user
+        const result: true | undefined = await Msg.administer();
+        //
+        //check the validity of the data
+        if (result === undefined) return;
+        //
+        //The message was succesfully sent so update the page.
+        //??
+    }
+    //
     async definer(): Promise<void> {
         //
         //
@@ -267,8 +331,10 @@ export default class main extends app.app {
         //
         //List of definers
         const definer: Array < { id: string } > = await server.exec(
-            "database", ["mutall_tracker"],
-            "get_sql_data", ["select id from definer"]
+            "database", 
+            ["mutall_tracker"],
+            "get_sql_data", 
+            ["select id from definer"]
         );
         //
         //Formulate the option from the definers list.
@@ -284,10 +350,12 @@ export default class main extends app.app {
     } 
 }
 
-class definer extends outlook.popup<Idef> {
+class definer extends outlook.baby<Idef>{
     //
-    constructor(){
-        super('definers.html')
+    //
+    constructor(app: main) {
+        //
+      super(app,'definers.html')  
     }
     //In future, check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
@@ -343,32 +411,51 @@ class definer extends outlook.popup<Idef> {
         return idefi;
      }
 }
-class tea_delivery extends popup<void>{
+class tea_delivery 
+    extends outlook.baby<true>
+    implements mod.journal {
     //
-    constructor(){
-      super('tea_delivery.html')
+    constructor(mother: main){
+      super(mother, 'tea_delivery.html')
+    }
+    get_business_id(): string {
+        throw new schema.mutall_error('Method not implemented.');
+    }
+    get_je(): {
+        ref_num: string; 
+        purpose: string; 
+        date: string;
+        amount: number;
+    } {
+        throw new schema.mutall_error('Method not implemented.');
+    }
+    get_debit(): string {
+        throw new schema.mutall_error('Method not implemented.');
+    }
+    get_credit(): string {
+        throw new schema.mutall_error('Method not implemented.');
     }
     //
     //check if a file json file containing Iquestionnaire is selected.
     //For now, do nothing
-    async check():Promise<boolean> {return true;}
+    async check():Promise<true> {
+        //
+        const post = await this.mother.accountant.post(this);
+        //
+        return true;}
     //
     //Collect data to show whether we should update the home page or not.
-    async get_result(): Promise<void> {}
+    async get_result(): Promise<true> {
+        //
+        return true;
+    }
     //
     //Add an event listener to the ok button.
     async show_panels() {
       //
       //Get the ok button
       const save = this.get_element("go");
-      //
-      //Add an event listener to the ok element
-      save.onclick = async () => this.save_delivery();
-    }
-    //
-    save_delivery(){
-      //
-      alert('Success');
+      
     }
   }
   //
@@ -427,23 +514,86 @@ class input_assignments extends popup<void>{
     }
 }
 //
-class svg extends popup<void>{
+class whatsapp extends mod.messenger{
     //
-    constructor(){
-        super('svg.html')
+    //Construct a whatsapp class.
+    constructor(public app: main){
+        //
+        super();
     }
     //
-    async check(): Promise<boolean> {return true};
-    //
-    //Check if a file json containing Iquestionare is selected.
-    async get_result(): Promise<void> {}
-    //
-    //add an event listener.
-    async show_panels():Promise<void> {
+    //check the entered data and if correct return true else return false.
+    //And prevents one from leaving the page.
+   async check():Promise<boolean>{
         //
+        //1. Collect and check all the data entered by the user.
+        //
+        //1.1 collect all the simple labels into an array.
+        //
+        //1.2 collect all the tables
+        //
+        //2. Write the data to the database. 
+        // send a message to the user.
+        const send = await this.app.messenger.send(this);
+        //
+        return true;
+    }
+    //Implement abstract method
+    async get_result(): Promise<void>{
+        //
+        
+    }
+}
+//
+//
+class complete_lv1_registration extends popup<void>
+// type role: Array<string>, org:string}
+{
+    //
+    //construct the reg class
+    constructor(){
+        super("lv1_reg.html" )
+    }
+    async check(): Promise<boolean> {
+        // const save = await this.mother.writer.save(this);
+        //
+        return true;
+    }
+    async get_result(): Promise<void> {
+        
+
+    }
+    //add an event listener.
+    async show_panels() {
+        //
+        //1. Populate the roles fieldset.
+        //Hint. Check out how the current roles are being filled in from the database.
+        this.fill_user_roles();
+        //
+        //2. Populate the business selector with businesses.
+        //Hint. Use the selector query to populate.
+        this.fill_selector("mutall_users", "user", "organization");
     }
     
 }
-
-
-  
+//
+class website extends outlook.baby<true>{
+    //
+    //Construct class website.
+    constructor(app: main){
+        //
+        super(app, "web.html")
+    }
+    //
+    //check the entered data and if correct return true else return false.
+    //And prevents one from leaving the page.
+    async check(): Promise<true> {
+        //
+        return true;        
+    }
+    //
+    //Implement abstract method
+    async get_result(): Promise<true> {
+        return true;
+    }
+}

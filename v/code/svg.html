@@ -1,41 +1,36 @@
 <html>
 
-    <head>
-        <meta charset="UTF-8">
-        <title>SVG</title>
-        <!--
-        CSS file.-->
-        <link rel="stylesheet" href="index.css"/>
-        <!--
-        JavaScript files.-->
-        <script src="svg.js"></script>
-    </head>
+<head>
+    <title>Web Template</title>
+    <link rel="stylesheet" href="svg.css" />
+</head>
 
-    <body onload="lineConnect()">
-    <svg id='svg-object' height="800px" width="1200px" viewBox="0 0 600 400">
+<body>
+    <div class="header">
+        <h4>SVG Template
+            <button id="cancel">Cancel</button>
+            <button id="go">Go</button>
+        </h4>
 
-        <line x1="300" y1="0" x2="300" y2="300" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+    </div>
+    <div class="content">
+        <svg id='svg_object' height="100% " width="100% " viewBox="0 0 605 280 ">
 
-        <line x1="0" y1="150" x2="600" y2="150" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+        <line x1="300 " y1="0 " x2="300 " y2="300 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
-        <line x1="150" y1="0" x2="150" y2="300" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+        <line x1="0 " y1="150 " x2="600 " y2="150 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
-        <line x1="450" y1="0" x2="450" y2="300" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+        <line x1="150 " y1="0 " x2="150 " y2="300 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
-        <line x1="0" y1="75" x2="600" y2="75" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+        <line x1="450 " y1="0 " x2="450 " y2="300 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
-        <line x1="0" y1="225" x2="600" y2="225" style="stroke-width: 2 ; stroke:black; stroke-dasharray:5" />
+        <line x1="0 " y1="75 " x2="600 " y2="75 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
-        <circle id="c1" cx="150" cy="225" r="75" fill="none" style="stroke-width: 2; stroke:black" />
-
-        <circle id="c2" cx="450" cy="75" r="75" fill="none" style="stroke-width: 2; stroke:black" />
-
-
-        <line id="connector" x1="150" y1="225" x2="450" y2="75" style="stroke-width: 2 ; stroke:black;" />
-
-
+        <line x1="0 " y1="225 " x2="600 " y2="225 " style="stroke-width: 2 ; stroke:black; stroke-dasharray:5 " />
 
     </svg>
+
+    </div>
 </body>
 
 </html>

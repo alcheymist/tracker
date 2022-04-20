@@ -5,43 +5,47 @@ import * as outlook from '../../../outlook/v/code/outlook.js';
 //Import schema.
 import * as schema from "../../../schema/v/code/schema.js";
 //
+import main from './main.js';
+//
 export type Imsg = {msg:string};
 //
 //use popup to create a new message
-export class msg extends outlook.baby<Imsg> {
+export class new_msg 
+    extends outlook.baby<true> {
     //
-    constructor(base:outlook.page) {
-        super(base, "new_msg.html");
+    constructor(public app: main) {
+        super(app, "new_msg.html");
     }
     //
     //In future, check if a file json containing iquestionare is selected
     //
-    check(): boolean {
+   async check(): Promise<boolean> {
         //
-        //Get the message text.
-        const text = <HTMLTextAreaElement>this.get_element('msg');
+        //1. Collect and check the data that the user has entered.
         //
-        if (text.value==="") {
-            //
-            this.win.alert('Please enter a message');
-            //
-            return false;
-        }
+        //2. Save the data to the database.
+        const save = await this.app.writer.save(this);
         //
-        //compile message.
-        this.result = <Imsg>{msg: text.value};
+        //3. Send the appropriate message to the user(s).
+        const send = await this.app.messenger.send(this);
+        //
+        //4. Update the journal entry(je) 
+        const post = await this.app.accountant.post(this);
+        //
+        //5. Schedule tasks if available.
+        const exec = await this.app.scheduler.exec(this);
         //
         return true;
     }
     //
     //Collect the message and media of communication specified by the user.
-    async get_result(): Promise<Imsg> {
+    async get_result(): Promise<true> {
         //
-        return this.result!;
+        return true;
     }
     //
     async show_panels(): Promise<void> {
-        const myalert = this.get_element('alert');
-        myalert.onclick = () =>this.win.alert('Alert');
+        //
+        
     }
 }

@@ -12,9 +12,7 @@ class config extends \config{
     //Title appearing on navigation tab should be the same as the namespace 
     //of this application.
     public string $id =__NAMESPACE__;
-    //
-    //The systems title
-    public string $title = __NAMESPACE__;
+        // 
     //The name of the application's database.
     public string $app_db = "mutall_tracker"; 
     //
